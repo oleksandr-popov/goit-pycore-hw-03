@@ -1,0 +1,23 @@
+[project]
+name = "goit-pycore-hw-03"
+version = "0.1.0"
+description = "Homework | Neoversity -> Python Code 2.0"
+authors = [
+    { name = "Oleksandr Popov", email = "oleksandr.popov@outlook.com" }
+]
+license = "Apache-2.0"
+readme = "README.md"
+
+[project.urls]
+Repository = "https://github.com/oleksandr-popov/goit-pycore-hw-03.git"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pytest = "^8.1.0"
+pdoc   = "^15.0.0"
+flake8 = "^7.3.0"
+black  = "^25.9.0"
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
