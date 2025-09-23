@@ -30,7 +30,7 @@ def get_days_from_today(date: str) -> int:
     return today_date.toordinal() - parsed_date.toordinal()
 
 
-def test_days_calculation():
+if __name__ == '__main__':
     """
     Command-line interface for testing get_days_from_today().
     Prompts the user for a date and prints the number of days between
@@ -44,6 +44,3 @@ def test_days_calculation():
     except ValueError:
         print(f"Invalid input '{raw_input}'. \
               Make sure you use 'YYYY-MM-DD' format")
-
-
-test_days_calculation()

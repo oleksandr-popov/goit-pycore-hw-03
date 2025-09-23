@@ -25,23 +25,26 @@ def normalize_phone(phone_number: str) -> str:
     matches = re.findall(pattern, phone_number.lstrip())
     if len(matches) > 0:
         cleared_phone_number = "".join(matches)
+        # If the cleared phone number contains only plus signs, 
+        # return empty string
+        if not any(symbol.isdigit() for symbol in cleared_phone_number):
+            return ""
         result_number: str
         if not cleared_phone_number.startswith(plus_sign):
             if cleared_phone_number.startswith(internation_code):
                 result_number = plus_sign + cleared_phone_number
             else:
-                result_number = plus_sign + internation_code \
-                    + cleared_phone_number
+                result_number = plus_sign + internation_code + \
+                cleared_phone_number
         else:
             result_number = cleared_phone_number
         return result_number
     else:
-        print(f"Log: we have completely malformed phone_number here: \
-              {phone_number}")
+       
         return ""
 
 
-def test_normalize():
+if __name__ == '__main__':
     """
     Test function for normalize_phone().
     Prints a list of sanitized phone numbers from various raw inputs.
@@ -62,6 +65,3 @@ def test_normalize():
     sanitized_numbers = list(filter(lambda x: len(x) > 0,
                                     pre_sanitized_numbers))
     print("Sanitized numbers are:\n", sanitized_numbers)
-
-
-test_normalize()

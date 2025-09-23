@@ -1,60 +1,41 @@
-from src.task4 import (
-    parse_input,
-    add_contact,
-    change_contact,
-    find_number_by_username,
-    output_all_contacts,
-)
+"""
+Unit tests for get_upcoming_birthdays function in task4.py
+"""
+from datetime import datetime, timedelta
+
+from src.task4 import get_upcoming_birthdays
 
 
-def test_parse_input():
-    assert parse_input("add John 12345") == ("add", "John", "12345")
-    assert parse_input("  phone   Alice ") == ("phone", "Alice")
+def test_empty_list():
+    assert get_upcoming_birthdays([]) == []
 
 
-def test_add_contact():
-    contacts = {}
-    result = add_contact(["Alice", "12345"], contacts)
-    assert result == "Contact added."
-    assert contacts == {"Alice": "12345"}
+def test_birthday_today():
+    today = datetime.today().strftime('%Y.%m.%d')
+    users = [{"name": "Test User", "birthday": today}]
+    result = get_upcoming_birthdays(users)
+    assert result and result[0]["name"] == "Test User"
 
 
-def test_change_contact_existing():
-    contacts = {"Bob": "11111"}
-    result = change_contact(["Bob", "22222"], contacts)
-    assert result == "Contact changed."
-    assert contacts["Bob"] == "22222"
+def test_birthday_in_range():
+    in_range = (datetime.today() + timedelta(days=3)).strftime('%Y.%m.%d')
+    users = [{"name": "Soon User", "birthday": in_range}]
+    result = get_upcoming_birthdays(users)
+    assert result and result[0]["name"] == "Soon User"
 
 
-def test_change_contact_missing():
-    contacts = {}
-    result = change_contact(["Charlie", "33333"], contacts)
-    assert (
-        result
-        == "There was no contact created for Charlie. Make sure \
-            you added it before and you spell it right."
-    )
+def test_birthday_out_of_range():
+    out_of_range = (datetime.today() + timedelta(days=30)).strftime('%Y.%m.%d')
+    users = [{"name": "Far User", "birthday": out_of_range}]
+    assert get_upcoming_birthdays(users) == []
 
 
-def test_find_number_by_username_found():
-    contacts = {"Daisy": "44444"}
-    result = find_number_by_username(["Daisy"], contacts)
-    assert result == "Phone number of Daisy: 44444."
-
-
-def test_find_number_by_username_not_found():
-    contacts = {}
-    result = find_number_by_username(["Eve"], contacts)
-    assert result == "There is not phone number saved for Eve."
-
-
-def test_output_all_contacts_non_empty():
-    contacts = {"Frank": "55555"}
-    result = output_all_contacts(contacts)
-    assert result == "Here's all added contacts:\n{'Frank': '55555'}."
-
-
-def test_output_all_contacts_empty():
-    contacts = {}
-    result = output_all_contacts(contacts)
-    assert result == "No contacts added so far."
+def test_birthday_on_weekend():
+    # Find the next Saturday
+    today = datetime.today()
+    days_until_saturday = (5 - today.weekday()) % 7
+    saturday = today + timedelta(days=days_until_saturday)
+    saturday_str = saturday.strftime('%Y.%m.%d')
+    users = [{"name": "Weekend User", "birthday": saturday_str}]
+    result = get_upcoming_birthdays(users)
+    assert result and result[0]["name"] == "Weekend User"

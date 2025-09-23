@@ -1,67 +1,34 @@
-import pytest
-import tempfile
-import os
-
-from src.task2 import get_cats_info
-
-
-def write_temp_file(content: str) -> str:
-    """Helper to create a temporary file with given content."""
-    temp = tempfile.NamedTemporaryFile(delete=False, mode="w",
-                                       encoding="utf-8")
-    temp.write(content)
-    temp.close()
-    return temp.name
+"""
+Unit tests for get_numbers_ticket function in task2.py
+"""
+from src.task2 import get_numbers_ticket
 
 
-def test_valid_data():
-    content = "1,Whiskers,3\n2,Tom,5\n3,Luna,2\n"
-    filepath = write_temp_file(content)
-    result = get_cats_info(filepath)
-    expected = [
-        {"id": "1", "name": "Whiskers", "age": 3},
-        {"id": "2", "name": "Tom", "age": 5},
-        {"id": "3", "name": "Luna", "age": 2},
-    ]
-    assert result == expected
-    os.remove(filepath)
+def test_valid_ticket():
+    numbers = get_numbers_ticket(1, 10, 5)
+    assert len(numbers) == 5
+    assert all(1 <= n <= 10 for n in numbers)
+    assert len(set(numbers)) == 5
+    assert numbers == sorted(numbers)
 
 
-def test_empty_file():
-    filepath = write_temp_file("")
-    result = get_cats_info(filepath)
-    assert result == []
-    os.remove(filepath)
+def test_min_greater_than_max():
+    assert get_numbers_ticket(10, 5, 3) == []
 
 
-def test_file_not_found():
-    result = get_cats_info("non_existent_file.txt")
-    assert result == []
+def test_min_less_than_1():
+    assert get_numbers_ticket(0, 10, 3) == []
 
 
-def test_malformed_line_missing_field():
-    content = "1,Whiskers\n2,Tom,5\n"
-    filepath = write_temp_file(content)
-    with pytest.raises(ValueError):
-        # This will raise ValueError due to unpacking error
-        get_cats_info(filepath)
-    os.remove(filepath)
+def test_max_greater_than_1000():
+    assert get_numbers_ticket(1, 1001, 3) == []
 
 
-def test_malformed_line_invalid_age():
-    content = "1,Whiskers,three\n"
-    filepath = write_temp_file(content)
-    result = get_cats_info(filepath)
-    assert result == []
-    os.remove(filepath)
+def test_quantity_too_large():
+    assert get_numbers_ticket(1, 5, 10) == []
 
 
-def test_custom_separator():
-    content = "1|Whiskers|3\n2|Tom|5\n"
-    filepath = write_temp_file(content)
-    result = get_cats_info(filepath, separator="|")
-    expected = [
-        {"id": "1", "name": "Whiskers", "age": 3},
-        {"id": "2", "name": "Tom", "age": 5},
-    ]
-    assert result == expected
+def test_unique_numbers():
+    numbers = get_numbers_ticket(1, 20, 20)
+    assert len(numbers) == 0
+    assert len(set(numbers)) == 0

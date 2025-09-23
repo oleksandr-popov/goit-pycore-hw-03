@@ -37,13 +37,10 @@ def get_numbers_ticket(min: int, max: int, quantity: int) -> list[int]:
     return result
 
 
-def test_generation_of_numbers():
+if __name__ == '__main__':
     """
     Test function for get_numbers_ticket().
     Prints a sample list of generated lottery numbers.
     """
     lottery_numbers = get_numbers_ticket(1, 100, 10)
     print(lottery_numbers)
-
-
-test_generation_of_numbers()

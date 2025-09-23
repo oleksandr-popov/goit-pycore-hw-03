@@ -1,55 +1,32 @@
-import tempfile
-import os
+"""
+Unit tests for get_days_from_today function in task1.py
+"""
+import pytest
+from datetime import datetime, timedelta
 
-from src.task1 import total_salary
-
-
-def write_temp_file(content: str) -> str:
-    """Helper to create a temporary file with given content."""
-    temp = tempfile.NamedTemporaryFile(delete=False, mode="w",
-                                       encoding="utf-8")
-    temp.write(content)
-    temp.close()
-    return temp.name
+from src.task1 import get_days_from_today
 
 
-def test_valid_data():
-    content = "Alice,1000\nBob,2000\nCharlie,3000\n"
-    filepath = write_temp_file(content)
-    total, average = total_salary(filepath)
-    assert total == 6000.0
-    assert average == 2000.0
-    os.remove(filepath)
+def test_today():
+    today = datetime.today().strftime('%Y-%m-%d')
+    assert get_days_from_today(today) == 0
 
 
-def test_empty_file():
-    filepath = write_temp_file("")
-    total, average = total_salary(filepath)
-    assert total == 0.0
-    assert average == 0.0
-    os.remove(filepath)
+def test_past_date():
+    date = (datetime.today() - timedelta(days=10)).strftime('%Y-%m-%d')
+    assert get_days_from_today(date) == 10
 
 
-def test_file_not_found():
-    filepath = "non_existent_file.txt"
-    total, average = total_salary(filepath)
-    assert total == 0.0
-    assert average == 0.0
+def test_future_date():
+    date = (datetime.today() + timedelta(days=5)).strftime('%Y-%m-%d')
+    assert get_days_from_today(date) == -5
 
 
-def test_invalid_lines():
-    content = "Alice,1000\nInvalidLine\nBob,abc\nCharlie,3000\n"
-    filepath = write_temp_file(content)
-    total, average = total_salary(filepath)
-    assert total == 4000.0
-    assert average == 2000.0
-    os.remove(filepath)
+def test_invalid_format():
+    with pytest.raises(ValueError):
+        get_days_from_today('2025/09/24')
 
 
-def test_mixed_valid_and_empty_lines():
-    content = "\nAlice,1000\n\nBob,2000\n\n"
-    filepath = write_temp_file(content)
-    total, average = total_salary(filepath)
-    assert total == 3000.0
-    assert average == 1500.0
-    os.remove(filepath)
+def test_nonexistent_date():
+    with pytest.raises(ValueError):
+        get_days_from_today('2025-02-30')
