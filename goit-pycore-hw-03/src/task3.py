@@ -25,7 +25,7 @@ def normalize_phone(phone_number: str) -> str:
     matches = re.findall(pattern, phone_number.lstrip())
     if len(matches) > 0:
         cleared_phone_number = "".join(matches)
-        # If the cleared phone number contains only plus signs, 
+        # If the cleared phone number contains only plus signs,
         # return empty string
         if not any(symbol.isdigit() for symbol in cleared_phone_number):
             return ""
@@ -35,12 +35,11 @@ def normalize_phone(phone_number: str) -> str:
                 result_number = plus_sign + cleared_phone_number
             else:
                 result_number = plus_sign + internation_code + \
-                cleared_phone_number
+                    cleared_phone_number
         else:
             result_number = cleared_phone_number
         return result_number
     else:
-       
         return ""
 
 
